@@ -48,6 +48,20 @@ window.onload = function () {
             }
         };
     }
+
+    let msg1btn = document.getElementById('callMsg1');
+    if (msg1btn != null) {
+        msg1btn.onclick = function (event) {
+            CallMessage(1, true)
+        };
+    }
+
+    let msg2btn = document.getElementById('callMsg2');
+    if (msg2btn != null) {
+        msg2btn.onclick = function (event) {
+            CallMessage(2, false)
+        };
+    }
 }
 
 // Добавляем сообщение
@@ -80,4 +94,43 @@ function addMessgeFromHost(event) {
 
     let mc = JSON.parse(event.data);
     insertMessageBlock(mc.Owner, mc.Message, 'message_wpf');
+}
+
+function CallMessage(index, test) {
+    //Варианты асинхронного вызова
+
+    // var msg = window.chrome.webview.hostObjects.dotnet.GetMessageAsync(index)
+    //     .then(function (msg) { alert('Owner: ' + msg.Owner + ' Message: ' + msg.Message); },
+    //         function () { alert('failed'); })
+
+    //const dt = chrome.webview.hostObjects.dotnet;
+    //var msg = await dt.GetMessageAsync(index, test);
+
+    // ===============
+    //Варианты синхронного вызова
+
+    //var msg = window.chrome.webview.hostObjects.sync.dotnet.GetMessage(index, test)
+
+    const dt = chrome.webview.hostObjects.sync.dotnet;
+    var msg = dt.GetMessage(index, test);
+
+    // ===============
+
+    alert('Owner: ' + msg.Owner + ' Message: ' + msg.Message);
+}
+
+//Отправляем json cooбщение
+function GetMessage1() {
+    return {
+        Owner: "HTML",
+        Message: "This is message1"
+    };
+}
+
+//Отправляем json cooбщение
+function GetMessage2() {
+    return {
+        Owner: "HTML",
+        Message: "This is message2"
+    };
 }

@@ -26,7 +26,20 @@
             </Grid.RowDefinitions>
 
             <Border Background="#66FFFFFF">
-                <TextBlock Text="WPF CHAT ROOM" FontSize="20" FontWeight="Bold" Margin="16, 10" Foreground="White"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <TextBlock Text="WPF CHAT ROOM" FontSize="20" FontWeight="Bold" Margin="16, 10" Foreground="White"/>
+
+                    <StackPanel Grid.Row="1" Orientation="Horizontal">
+                        <Button x:Name="callMsg1" Content="Сообщение 1" Padding="10,1" Click="callMsg1_Click"/>
+                        <Button x:Name="callMsg2" Content="Сообщение 2" Padding="10,1" Click="callMsg2_Click"/>
+                    </StackPanel>
+                </Grid>
+                
             </Border>
 
             <ListBox Grid.Row="1" Background="Transparent" ItemsSource="{Binding Messages}">
@@ -117,7 +130,6 @@
             </Border>
         </Grid>
 
-
-        <wv2:WebView2 x:Name="webView" Grid.Column="1" Source="https://localhost.html"/>
+        <wv2:WebView2 x:Name="webView" Grid.Column="1" Source="http://html/index.html"/>
     </Grid>
 </Window>

@@ -85,6 +85,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Model\ChatMessage.cs" />
+    <Compile Include="Model\HostObject\DomHostObjectDotNet.cs" />
+    <Compile Include="Model\Service\IMessageDataProvider.cs" />
+    <Compile Include="Model\Service\MessageDataProvider.cs" />
     <Compile Include="ViewModel\ChatMessageViewModel.cs" />
     <Compile Include="ViewModel\MessageHTMLViewModel.cs" />
     <Compile Include="ViewModel\MessageWPFViewModel.cs" />

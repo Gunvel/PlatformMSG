@@ -17,6 +17,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Newtonsoft.Json;
 using PlatformMSG.Model;
+using PlatformMSG.Model.HostObject;
+using PlatformMSG.Model.Service;
+using System.Runtime.InteropServices;
 
 namespace PlatformMSG.View
 {
@@ -29,12 +32,17 @@ namespace PlatformMSG.View
         /// Модель представления
         /// </summary>
         MainViewModel _viewModel;
+        /// <summary>
+        /// Глобальный объект узла
+        /// </summary>
+        DomHostObjectDotNet _hostObject;
 
         public MainWindow()
         {
             InitializeComponent();
 
             _viewModel = ServiceLocator.Current.GetInstance<MainViewModel>(); //Получаем модель представления из локатора
+            _hostObject = new DomHostObjectDotNet(new MessageDataProvider());
 
             webView.NavigationStarting += WebView_NavigationStarting; //Начало загрузки страницы
             webView.NavigationCompleted += WebView_NavigationCompleted; //Конец загрузки страницы
@@ -50,6 +58,7 @@ namespace PlatformMSG.View
 
         private void WebView_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
         {
+            webView.CoreWebView2.AddHostObjectToScript("dotnet", _hostObject);
             wpfChatRoom.IsEnabled = true; //Включаем чат WPF
         }
 
@@ -57,7 +66,7 @@ namespace PlatformMSG.View
         {
             await webView.EnsureCoreWebView2Async();
             webView.CoreWebView2.SetVirtualHostNameToFolderMapping("html", "html", CoreWebView2HostResourceAccessKind.Allow);
-            webView.Source = new Uri("http://html/index.html");
+            //webView.Source = new Uri("http://html/index.html");
 
             webView.CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived; //Прослушиваем сообщения от страницы
         }
@@ -73,7 +82,7 @@ namespace PlatformMSG.View
 
             if (string.IsNullOrEmpty(data) || string.IsNullOrWhiteSpace(data))
                 return;
-
+            
             ChatMessage cm = JsonConvert.DeserializeObject<ChatMessage>(data);
 
             _viewModel.Messages.Add(new MessageHTMLViewModel(cm));
@@ -108,6 +117,41 @@ namespace PlatformMSG.View
         {
             if (e.Key == Key.Enter)
                 Button_Click(null, null); //Из-за кривых биндингов _viewModel.MessageText = null и это не работает
+        }
+
+        /// <summary>
+        /// Запрашиваем сообщение1 из js
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void callMsg1_Click(object sender, RoutedEventArgs e)
+        {
+            string jsonResult = await webView.ExecuteScriptAsync("GetMessage1()");
+
+            if (string.IsNullOrEmpty(jsonResult) || string.IsNullOrWhiteSpace(jsonResult))
+                return;
+
+            ChatMessage cm = JsonConvert.DeserializeObject<ChatMessage>(jsonResult);
+
+            MessageBox.Show(this, cm.Message, cm.Owner);
+
+        }
+
+        /// <summary>
+        /// Запрашиваем сообщение2 из js
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void callMsg2_Click(object sender, RoutedEventArgs e)
+        {
+            string jsonResult = await webView.ExecuteScriptAsync("GetMessage2()");
+
+            if (string.IsNullOrEmpty(jsonResult) || string.IsNullOrWhiteSpace(jsonResult))
+                return;
+
+            ChatMessage cm = JsonConvert.DeserializeObject<ChatMessage>(jsonResult);
+
+            MessageBox.Show(this, cm.Message, cm.Owner);
         }
     }
 }
