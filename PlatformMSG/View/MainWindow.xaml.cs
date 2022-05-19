@@ -116,7 +116,7 @@ namespace PlatformMSG.View
         private void TextBox_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
-                Button_Click(null, null); //Из-за кривых биндингов _viewModel.MessageText = null и это не работает
+                Button_Click(null, null);
         }
 
         /// <summary>

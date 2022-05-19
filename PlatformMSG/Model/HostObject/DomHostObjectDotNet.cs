@@ -53,15 +53,18 @@ namespace PlatformMSG.Model.HostObject
         /// <returns></returns>
         public async Task<ChatMessage> GetMessageAsync(int index, bool test)
         {
-            switch (index)
+            return await Task.Run(() =>
             {
-                case 1:
-                    return _provider.GetMessage1();
-                case 2:
-                    return _provider.GetMessage2();
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(index));
-            }
+                switch (index)
+                {
+                    case 1:
+                        return _provider.GetMessage1();
+                    case 2:
+                        return _provider.GetMessage2();
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(index));
+                }
+            });
         }
     }
 }
